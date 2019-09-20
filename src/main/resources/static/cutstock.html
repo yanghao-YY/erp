@@ -1,0 +1,339 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>小咸鱼库存管理系统</title>
+    <meta name="description" content="Ela Admin - HTML5 Admin Template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+    <link rel="stylesheet" href="assets/css/normalize.css">
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/themify-icons.css">
+    <link rel="stylesheet" href="assets/css/pe-icon-7-filled.css">
+    <link rel="stylesheet" href="assets/css/flag-icon.min.css"><link rel="stylesheet" href="assets/css/cs-skin-elastic.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
+    <link href="assets/weather/css/weather-icons.css" rel="stylesheet" />
+    <link href="assets/calendar/fullcalendar.css" rel="stylesheet" />
+
+    <link href="assets/css/charts/chartist.min.css" rel="stylesheet">
+    <link href="assets/css/lib/vector-map/jqvmap.min.css" rel="stylesheet">
+
+    <style>
+        #weatherWidget .currentDesc {
+            color: #ffffff!important;
+        }
+        .traffic-chart {
+            min-height: 335px;
+        }
+        #flotPie1  {
+            height: 150px;
+        }
+        #flotPie1 td {
+            padding:3px;
+        }
+        #flotPie1 table {
+            top: 20px!important;
+            right: -10px!important;
+        }
+        .chart-container {
+            display: table;
+            min-width: 270px ;
+            text-align: left;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        #flotLine5  {
+            height: 105px;
+        }
+
+        #flotBarChart {
+            height: 150px;
+        }
+        #cellPaiChart{
+            height: 160px;
+        }
+
+    </style>
+</head>
+
+<body>
+<!-- Left Panel -->
+<aside id="left-panel" class="left-panel">
+    <nav class="navbar navbar-expand-sm navbar-default">
+        <div id="main-menu" class="main-menu collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active">
+                    <a href="index.html"><i class="menu-icon fa fa-laptop"></i>库存快速查询 </a>
+                </li>
+                <li class="menu-item-has-children dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>库存管理</a>
+                    <ul class="sub-menu children dropdown-menu">                            <li><i class="fa fa-puzzle-piece"></i><a href="addstock.html">扫码入库</a></li>
+                        <li><i class="fa fa-id-badge"></i><a href="cutstock.html">扫码出库</a></li>
+                        <li><i class="fa fa-bars"></i><a href="showStock.html">库存手动管理</a></li>
+                                            </ul>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </nav>
+</aside>
+<!-- /#left-panel -->
+<!-- Right Panel -->
+<div id="right-panel" class="right-panel">
+    <!-- Header-->
+    <header id="header" class="header">
+        <div class="top-left">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="./"><img src="images/logo.png" alt="Logo"></a>
+                <a class="navbar-brand hidden" href="./"><img src="images/logo2.png" alt="Logo"></a>
+                <a id="menuToggle" class="menutoggle"><i class="fa fa-bars"></i></a>
+            </div>
+        </div>
+
+    </header>
+    <!-- /#header -->
+    <!-- Content -->
+    <div class="content">
+        <!-- Animated -->
+        <div class="animated fadeIn">
+            <form role="form"  method="post" style="display:inline-block;width: 50%">
+
+                <div class="form-group">
+                    <label >扫码出库</label>
+                    <textarea class="form-control" rows="10" name="plus" id="cut_plus" style="font-size: large"></textarea>
+                </div>
+                <button type="button" class="btn btn-success" id="cutStock" style="font-size: large">确认扫码出库</button>
+                <button type="button" class="btn btn-warning" id="reset" style="font-size: large">清空输入框</button>
+            </form>
+            <div  style="height: auto;float:right;display:inline-block;width: 50%;padding: 10px" >
+
+                <span style="font-size: 16px;font-family: 'Open Sans', sans-serif;color: #212529;font-weight: bold">扫入的条码信息</span>
+                <div id="showcode" style="background-color: #fff;width: 100%;height: auto;border-radius: .25rem;border: 1px solid #f1f2f7;"></div>
+                <div id="shownum" style="font-size: large"></div>
+            </div>
+        </div>
+        <div class="modal fade" id="loadingModal" backdrop="static" keyboard="false">
+            　　<div style="width: 200px;height:20px; z-index: 20000; position: absolute; text-align: center; left: 50%; top: 50%;margin-left:-100px;margin-top:-10px">
+            　　　　<div class="alert alert-success">努力加载中</div>
+            　　　　
+            　　</div>
+        </div>
+        <!-- .animated -->
+    </div>
+    <!-- /.content -->
+    <div class="clearfix"></div>
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-inner bg-white">
+            <div class="row">
+                <div class="col-sm-6">
+                    Copyright &copy; 2019 SaltyFish <a href="http://www.taobao.com/" target="_blank" title="小咸鱼">小咸鱼</a>
+                </div>
+                <div class="col-sm-6 text-right"> Designed by SaltyFish
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- /.site-footer -->
+</div>
+<!-- /#right-panel -->
+
+<script src="assets/js/vendor/jquery-2.1.4.min.js"></script>
+<script src="assets/js/popper.min.js"></script>
+<script src="assets/js/plugins.js"></script>
+<script src="assets/js/main.js"></script>
+
+
+<script src="assets/js/lib/chartist/chartist.min.js"></script>
+<script src="assets/js/lib/chartist/chartist-plugin-legend.js"></script>
+<script src="assets/js/lib/flot-chart/jquery.flot.js"></script>
+<script src="assets/js/lib/flot-chart/jquery.flot.pie.js"></script>
+<script src="assets/js/lib/flot-chart/jquery.flot.spline.js"></script>
+<script src="assets/weather/js/jquery.simpleWeather.min.js"></script>
+<script src="assets/weather/js/weather-init.js"></script>
+
+<script src="assets/calendar/fullcalendar.min.js"></script>
+<script src="assets/calendar/fullcalendar-init.js"></script>
+<script src="assets/js/init/weather-init.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.js"></script>
+<script src="assets/js/init/fullcalendar-init.js"></script>
+
+<!--Local Stuff-->
+<script>
+    //清空显示数据
+    $("#reset").on('click', function () {
+        $("#cut_plus").val("");
+        $("#shownum").html("");
+        $("#showcode").html("");
+
+
+    });
+    //获取输入数组
+    function getcode_input(){
+        var plu_arr = $('#cut_plus').val().split(/[\n]/);
+        console.info(plu_arr);
+        var obj={};
+        for(var i=0;i<plu_arr.length;i++){
+            //将循环数组中的每个数赋值给item 作为对象中的键
+            if (plu_arr[i].length == 13){
+                var item=plu_arr[i];
+                console.info(item);
+                if(obj[item]){//这句的意思是对象中以item作为键存在吗，如果存在的话，就让这键的值再加1
+                    obj[item]=obj[item]+1
+                }else{
+                    //如果不存在等于1，多次循环就可得到结果
+                    obj[item]=1
+                }
+                //       $('#showcode').append("条码"+item+"*"+obj[item])
+            }
+            // $('#showcode').append("条码"+item+"*"+obj[item])
+        };
+        //alert(obj);
+        // console.info(obj);
+        var count = 0;
+        for (var i in obj){
+
+            $('#showcode').append(i+" X "+obj[i]+"<br>");
+            count = count+obj[i];
+
+        }
+        $('#shownum').text("本次扫码出库共计："+count+" 双");
+
+
+    };
+
+    $("#cut_plus").bind("input oninput",function(event){
+        var add_plus = this.value;
+        //add_plus = $.trim(add_plus);
+        this.value = add_plus;
+        $('#showcode').html("");
+        $('#shownum').html("");
+        getcode_input();
+
+
+
+        // $("#test").html(viewName.toUpperCase());
+
+
+
+    });
+
+    $("#addStock").on('click',function () {
+        // getcode_input();
+        var plus = $("#add_plus").val();
+        // console.info(plus);
+        var params = {"plus": plus};
+        $.ajax({
+            url: "/addStock",
+            type: "post",
+            data: params,
+            dataType: "json",
+            success: function (data) {
+                if (data.code == "0000") {
+                    swal(
+                        'SUCCESS!',
+                        '扫码入库成功',
+                        'success'
+                    )
+                } else {
+                    swal(
+                        'error!',
+                        '扫码入库失败',
+                        'error'
+                    )
+
+                }
+
+            }
+        });
+    });
+    //显示遮罩
+    function showload() {
+        console.info("调用了");
+        $('#loadingModal').modal({backdrop: 'static', keyboard: false});
+
+    };
+    //关闭遮罩
+    function hideload() {
+        $('#loadingModal').modal('hide');
+
+    };
+    $("#cutStock").on('click',function () {
+        showload();
+        var plus = $("#cut_plus").val();
+        var params = {"plus": plus};
+        $.ajax({
+            url: "/cutStock",
+            type: "post",
+            data: params,
+            dataType: "json",
+            success: function (data) {
+                if (data.code == "0000") {
+                    hideload();
+                    swal({
+                        title:"SUCCESS!",
+                        text: "扫码出库成功",
+                        icon: "success",
+                        buttons: {
+                            cancel: {
+                                text: "查库存",
+                                value: null,
+                                visible: true,
+                                className: "",
+                                closeModal: true,
+                            },
+                            confirm: {
+                                text: "关闭",
+                                value: true,
+                                visible: true,
+                                className: "",
+                                closeModal: true
+                            }
+                        },
+
+                    });
+                    $('button:contains("查库存")').click(function () {
+                        location.href = '/index.html'
+                    })
+                } else {
+                    hideload();
+                    swal(
+                        'error!',
+                        '扫码出库失败',
+                        'error'
+                    )
+
+                }
+
+            },error:function () {
+                hideload();
+                swal(
+                    'error!',
+                    '系统异常，请联系管理员',
+                    'error'
+                )
+            }
+        });
+    });
+    $(document).ready(function(){
+        $('#cut_plus').focus();
+    });
+
+</script>
+</body>
+</html>

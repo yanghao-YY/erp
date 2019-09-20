@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SaltyFish</title>
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+</head>
+<body>
+<form role="form"  method="post">
+    <div class="form-group">
+        <label >扫码入库</label>
+        <textarea class="form-control" rows="10" name="plus" id="add_plus"></textarea>
+    </div>
+        <button type="button" class="btn btn-default" id="addStock">确认扫码入库</button>
+</form>
+<div id="showcode" style="height: auto">
+    扫入的条码信息：
+
+</div>
+
+<div class="modal fade" id="loadingModal" backdrop="static" keyboard="false">
+    　　<div style="width: 200px;height:20px; z-index: 20000; position: absolute; text-align: center; left: 50%; top: 50%;margin-left:-100px;margin-top:-10px">
+    　　　　<div class="alert alert-success">努力加载中</div>
+    　　　　
+    　　</div>
+</div>
+<form role="form"  method="post">
+    <div class="form-group">
+        <label >扫码入库</label>
+        <textarea class="form-control" rows="10" name="plus" id="cut_plus"></textarea>
+    </div>
+    <button type="button" class="btn btn-default" id="cutStock">确认扫码出库</button>
+</form>
+
+<script type="text/javascript">
+    function showload() {
+        $('#loadingModal').modal({backdrop: 'static', keyboard: false});;
+
+    };
+    function hideload() {
+        $('#loadingModal').modal('hide');
+
+    };
+//获取输入数组
+ function getcode_input(){
+     var plu_arr = $('#add_plus').val().split(/[\n]/);
+     console.info(plu_arr);
+     var obj={};
+     for(var i=0;i<plu_arr.length;i++){
+         //将循环数组中的每个数赋值给item 作为对象中的键
+         if (plu_arr[i].length == 13){
+         var item=plu_arr[i];
+         console.info(item);
+         if(obj[item]){//这句的意思是对象中以item作为键存在吗，如果存在的话，就让这键的值再加1
+             obj[item]=obj[item]+1
+         }else{
+             //如果不存在等于1，多次循环就可得到结果
+             obj[item]=1
+         }
+      //       $('#showcode').append("条码"+item+"*"+obj[item])
+         }
+     // $('#showcode').append("条码"+item+"*"+obj[item])
+     };
+    //alert(obj);
+  // console.info(obj);
+     var count = 0;
+     for (var i in obj){
+
+         $('#showcode').append(i+" X "+obj[i]+"<br>");
+         count = count+obj[i];
+
+     }
+     $('#showcode').append("本次扫码入库共计："+count+"双！");
+
+
+ };
+
+$("#add_plus").bind("input oninput",function(event){
+    var add_plus = this.value;
+    //add_plus = $.trim(add_plus);
+    this.value = add_plus;
+    $('#showcode').html("");
+    getcode_input();
+
+
+
+    // $("#test").html(viewName.toUpperCase());
+
+
+
+});
+
+    $("#addStock").on('click',function (){
+
+       // getcode_input();
+        showload();
+
+        var plus = $("#add_plus").val();
+       // console.info(plus);
+        var params = {"plus": plus};
+        $.ajax({
+            url: "/addStock",
+            type: "post",
+            data: params,
+            dataType: "json",
+            success: function (data) {
+                if (data.code == "0000") {
+                    hideload();
+                    // swal(
+                    //     'SUCCESS!',
+                    //     '扫码入库成功',
+                    //     'success'
+                    //
+                    // )
+                    swal({
+                        title:"SUCCESS!",
+                        text: "扫码入库成功",
+                        type: "success",
+                        showCancelButton : true,
+                        confirmButtonText: "OK",
+
+                        cancelButtonText : "No",
+                //     }).then(function () {
+                //         window.location.href = "/login.html"
+                //     })
+                })
+                } else {
+                    hideload();
+                    swal(
+                        'error!',
+                        '扫码入库失败',
+                        'error'
+                    )
+
+                }
+
+            },
+            error:function () {
+                hideload();
+                // swal(
+                //     'error!',
+                //     '系统异常，请联系管理员',
+                //     'error'
+                // )
+                swal({
+                    title:"SUCCESS!",
+                    text: "扫码入库成功",
+                    icon: "success",
+                    buttons: {
+                        cancel: {
+                            text: "查库存",
+                            value: null,
+                            visible: true,
+                            className: "",
+                            closeModal: true,
+                        },
+                        confirm: {
+                            text: "关闭",
+                            value: true,
+                            visible: true,
+                            className: "",
+                            closeModal: true
+                        }
+                    },
+
+                });
+                $('button:contains("查库存")').click(function () {
+                    location.href = '/index.html'
+                })
+            }
+        });
+    });
+    // $(".go_stock").on('click',function () {
+    //     location.href="/index";
+    //
+    //
+    //
+    // });
+    $("#cutStock").on('click',function () {
+        var plus = $("#cut_plus").val();
+          var params = {"plus": plus};
+        $.ajax({
+            url: "/cutStock",
+            type: "post",
+            data: params,
+            dataType: "json",
+            success: function (data) {
+                if (data.code == "0000") {
+                    swal(
+                        'SUCCESS!',
+                        '扫码出库成功',
+                        'success'
+                    )
+                } else {
+                    swal(
+                        'error!',
+                        '扫码出库失败',
+                        'error'
+                    )
+
+                }
+
+            }
+        });
+    });
+
+
+
+</script>
+</body>
+</html>
