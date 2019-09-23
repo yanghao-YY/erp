@@ -19,7 +19,7 @@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 
-
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <link rel="stylesheet" href="assets/css/normalize.css">
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/font-awesome.min.css">
@@ -165,9 +165,9 @@
                             <button id="reset" class="btn btn-black" type="button" >
                                 重置
                             </button>
-                            <button id="btn_export" class="export-excel btn btn-info" type="button" >
-                                导出
-                            </button>
+                            <!--<button id="btn_export" class="export-excel btn btn-info" type="button" onclick="exportData()">-->
+                                <!--导出-->
+                            <!--</button>-->
                         </div>
 
 
@@ -236,7 +236,9 @@
 <script src="https://cdn.bootcss.com/FileSaver.js/2014-11-29/FileSaver.min.js"></script>
 <script src="https://cdn.bootcss.com/xlsx/0.15.1/xlsx.core.min.js"></script>
 <script src="https://unpkg.com/tableexport.jquery.plugin/tableExport.min.js"></script>
+
 <script src="https://cdn.bootcss.com/bootstrap-table/1.15.4/extensions/export/bootstrap-table-export.js"></script>
+
 
 
 <!--Local Stuff-->
@@ -271,14 +273,14 @@
             pageList:[10,30,50],//记录数可选
             striped:true,
             showExport:true,
-            initExport:true,
-            exportDataType:'all',
-            exportTypes:['excel'],
-           // Icons:'glyphicon-export icon-share',
-            exportButton:$('#btn_export'),
-            exportOptions: {
-                fileName:'库存表',
-                ignoreColumn:["id","plu"],
+            exportTypes: ['excel'],
+            exportDataType: 'all',
+            Icons:'glyphicon-export',
+            exportOptions:{
+                ignoreColumn: ["id","plu"],  //忽略某一列的索引
+                fileName: getdate()+'鞋子库存数据',  //文件名称设置
+                worksheetName: 'sheet1',  //表格工作区名称
+                tableName: '鞋子库存数据',
             },
             queryParamsType:'',
             formatLoadingMessage:function () {
@@ -319,7 +321,7 @@
                 },
                 {
                     field: 'size',
-                    title: '大小',
+                    title: '尺码',
                     align: 'center',
                     valign: 'middle',
                 },
@@ -357,7 +359,18 @@
     $(document).ready(function(){
         initTable();
         search();
+
     });
+
+
+    //获取当前日期
+          function getdate() {
+              var mydate = new Date();
+              var str = "" + mydate.getFullYear() + "年";
+              str += (mydate.getMonth() + 1) + "月";
+              str += mydate.getDate() + "日";
+              return str;
+          }
 </script>
 </body>
 </html>
