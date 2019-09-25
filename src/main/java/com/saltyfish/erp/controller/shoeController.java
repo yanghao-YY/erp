@@ -7,6 +7,7 @@ import com.saltyfish.erp.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.saltyfish.erp.service.shoeService;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -104,5 +105,15 @@ public class shoeController {
             return new Result("9999","删除鞋子信息失败",null);
         }
     }
+    @GetMapping("/queryByplu")
+  public Shoes queryByplu(@RequestParam("plu")String plu){
+        try {
+            Shoes shoes = shoeService.queryByplu(plu);
+            return shoes;
+        } catch (Exception e) {
 
+            return null;
+        }
+
+    }
 }

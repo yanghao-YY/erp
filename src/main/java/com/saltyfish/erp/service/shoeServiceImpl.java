@@ -42,4 +42,10 @@ public class shoeServiceImpl implements shoeService {
     public void delete(int id) {
         shoeMapper.deleteShoes(id);
     }
+
+    @Override
+    public Shoes queryByplu(String plu) {
+       Shoes shoes = shoeMapper.queryByplu(plu);
+        return shoes;
+    }
 }

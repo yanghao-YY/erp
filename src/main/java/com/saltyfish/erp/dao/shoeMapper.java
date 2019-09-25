@@ -53,5 +53,8 @@ public interface shoeMapper {
     //删除鞋子
     @Delete("delete from shoes where id = #{id}")
     void deleteShoes(@Param("id")int id);
+    //通过plu查鞋子名字、颜色、尺码
+    @Select("select * from shoes where plu = #{plu}")
+    Shoes queryByplu(@Param("plu")String plu);
 }
 
