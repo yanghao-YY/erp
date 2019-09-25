@@ -117,6 +117,10 @@
     <!-- Content -->
     <div class="content" style="width: auto">
         <!-- Animated -->
+
+        <canvas id="text_remark" width="200" height="20">
+
+        </canvas>
         <canvas id="ean" width="200" height="100">
 
         </canvas>
@@ -155,7 +159,7 @@
 <script src="assets/weather/js/weather-init.js"></script>
 <script src="assets/js/lib/moment/moment.js"></script>
 <script src="assets/calendar/fullcalendar.min.js"></script>
-<script src="assets/calendar/fullcalendar-init.js"></script>cript>
+<script src="assets/calendar/fullcalendar-init.js"></script>
 <script src="assets/js/init/weather-init.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
@@ -185,10 +189,20 @@
 
 <!--Local Stuff-->
 <script type="application/javascript">
-    $("#ean").EAN13("600310191400", {
-        number: true,
-        prefix: true
-    });
+
+     var ctx=document.getElementById("text_remark");
+     ctx.getContext("2d").fillText("yz003裸色33",50,0);
+
+      // function generate_plu(){
+        $("#ean").EAN13("600310191400", {
+            number: true,
+            prefix: true
+        });
+     // }
+     // //   // ctx.getContext("2d").fillText("yz003裸色33",100,50);
+     //  ctx.getContext("2d").fillText(generate_plu());
+
+
 
     $("#reset").on('click', function () {
         $("#model").val("");
