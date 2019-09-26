@@ -41,32 +41,32 @@
 </form>
 <button onclick="getShoesInfo(6003101914003)">点击查看鞋子</button>
 <script type="text/javascript">
-    //获取子
-    function getShoesInfo(plu) {
-
-        //var plus = $("#add_plus").val();
-        // console.info(plus);
-        var params = {"plu": plu};
-        $.ajax({
-            url: "/queryByplu",
-            type: "get",
-            cache:"false",
-            data: params,
-            dataType: "json",
-            success: function (data) {
-                var shoesObj = JSON.parse(data);
-                var ShoesInfo = " "+shoesObj.model+shoesObj.color+shoesObj.size+" ";
-                return ShoesInfo;
-            },
-            error:function () {
-                swal(
-                    'error!',
-                    '条码解析系统异常，请联系管理员',
-                    'error'
-                )
-            }
-        });
-    };
+    // //获取子
+    // function getShoesInfo(plu) {
+    //
+    //     //var plus = $("#add_plus").val();
+    //     // console.info(plus);
+    //     var params = {"plu": plu};
+    //     $.ajax({
+    //         url: "/queryByplu",
+    //         type: "get",
+    //         cache:"false",
+    //         data: params,
+    //         dataType: "json",
+    //         success: function (data) {
+    //             var shoesObj = JSON.parse(data);
+    //             var ShoesInfo = " "+shoesObj.model+shoesObj.color+shoesObj.size+" ";
+    //             return ShoesInfo;
+    //         },
+    //         error:function () {
+    //             swal(
+    //                 'error!',
+    //                 '条码解析系统异常，请联系管理员',
+    //                 'error'
+    //             )
+    //         }
+    //     });
+    // };
     function showload() {
         $('#loadingModal').modal({backdrop: 'static', keyboard: false});;
 
