@@ -9,7 +9,7 @@
     <title>小咸鱼库存管理系统</title>
     <meta name="description" content="Ela Admin - HTML5 Admin Template">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--<link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">-->
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
     <!--<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>-->
@@ -21,7 +21,7 @@
 
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <link rel="stylesheet" href="assets/css/normalize.css">
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <!--<link rel="stylesheet" href="assets/css/bootstrap.min.css">-->
     <link rel="stylesheet" href="assets/css/font-awesome.min.css">
     <link rel="stylesheet" href="assets/css/themify-icons.css">
     <link rel="stylesheet" href="assets/css/pe-icon-7-filled.css">
@@ -117,13 +117,49 @@
     <!-- Content -->
     <div class="content" style="width: auto">
         <!-- Animated -->
+        <div>
 
-        <canvas id="text_remark" width="200" height="20">
+            <form role="form">
+                <div class="form-group">
+                    <label for="model">货号:</label>
+                    <input type="text" class="form-control" id="model" placeholder="YZ003">
+                </div>
+                <div class="form-group">
+                    <label for="plu_model">货号对应的编码:</label>
+                    <input type="text" class="form-control" id="plu_model" placeholder="0031">
+                </div>
+                <div class="form-group">
+                    <label for="color">颜色:</label>
+                    <input type="text" class="form-control" id="color" placeholder="裸色">
+                </div>
+                <div class="form-group">
+                    <label for="plu_color">颜色对应的编码:</label>
+                    <input type="text" class="form-control" id="plu_color" placeholder="0019">
+                </div>
+                <div class="form-group">
+                    <label for="color">尺码区间</label>
+                    <input type="text" class="form-control" id="size_start" placeholder="34">--
+                    <input type="text" class="form-control" id="size_end" placeholder="39">
+                </div>
+                <!--<div class="form-group">-->
+                    <!--<label for="plu_size">尺码对应的编码:</label>-->
+                    <!--<input type="text" class="form-control" id="plu_size" placeholder="350">-->
+                <!--</div>-->
+
+                <button type="button" class="btn btn-success" onclick="generate_plus()">生成条码</button>
+            </form>
+
+    </div>
+        <canvas id="title" width="300" height="20" style="font-size: larger;border:1px solid #000000;display: none">
 
         </canvas>
-        <canvas id="ean" width="200" height="100">
+        <canvas id="ean" width="300" height="80" style="display: none">
 
         </canvas>
+        <div id="plus"></div>
+        <!--<canvas id="plu_code" width="300" height="100" >-->
+
+        <!--</canvas>-->
         <!-- .animated -->
     </div>
     <!-- /.content -->
@@ -191,18 +227,50 @@
 <!--Local Stuff-->
 <script type="application/javascript">
 
-     var ctx=document.getElementById("text_remark");
-     ctx.getContext("2d").fillText("yz003裸色33",50,0);
+    function generate_plus() {
+        $("#plus").html(" ");
+        var model = $("#model").val();
+        var plu_model = $("#plu_model").val();
+        var color = $("#color").val();
+        var plu_color = $("#plu_color").val();
+        var size_start = $("#size_start").val();
+        var size_end = $("#size_end").val();
+        var info = model+color+size_start;
 
-      // function generate_plu(){
-        $("#ean").EAN13("600310191400", {
+        for (var i = size_start;i<=size_end;i++){
+            var plu = "6"+plu_model+plu_color+i*10;
+            do_vancas(info,plu,i);
+        }
+
+
+    }
+
+
+
+
+   function do_vancas(info,plu,ext)
+    {
+        var title = document.getElementById("title");
+        title.getContext("2d").clearRect(0,0,300,20);
+        title.getContext("2d").font = "18px Arial";
+        title.getContext("2d").fillText(info, 20, 15);
+        // title.getContext("2d").fillText("genxinle ", 20, 15);
+        // title.getContext("2d").clearRect(0,0,300,20);
+        document.getElementById("ean").getContext("2d").clearRect(0,0,300,80);
+                $("#ean").EAN13(plu, {
             number: true,
             prefix: true
         });
-     // }
-     // //   // ctx.getContext("2d").fillText("yz003裸色33",100,50);
-     //  ctx.getContext("2d").fillText(generate_plu());
 
+        $("#plus").append("<canvas id=plu_code+ext width=\"300\" height=\"100\" >\n" +
+            "\n" +
+            "        </canvas>")
+        var plu_code = document.getElementById("plu_code"+ext).getContext("2d");
+        document.getElementById("plu_code"+ext).getContext("2d").clearRect(0,0,300,100);
+        plu_code.drawImage(document.getElementById("title"), 0, 0);
+        plu_code.drawImage(document.getElementById("ean"), 0, 20);
+
+    }
 
 
     $("#reset").on('click', function () {
