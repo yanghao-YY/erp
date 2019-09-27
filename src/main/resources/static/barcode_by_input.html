@@ -147,6 +147,8 @@
                 <!--</div>-->
 
                 <button type="button" class="btn btn-success" onclick="generate_plus()">生成条码</button>
+                <button type="button" class="btn btn-info" onclick="download_plu()">下载条码压缩包</button>
+                <button type="button" class="btn btn-info" onclick="get_data()">showdata</button>
             </form>
 
     </div>
@@ -226,8 +228,43 @@
 
 <!--Local Stuff-->
 <script type="application/javascript">
+    function get_data(){
+        var model = $("#model").val();
+        var plu_model = $("#plu_model").val();
+        var color = $("#color").val();
+        var plu_color = $("#plu_color").val();
+        var size_start = $("#size_start").val();
+        var size_end = $("#size_end").val();
+    var shoesArray = new Array();
 
+
+            for(var i = size_start,j=0;i<=size_end,j<((size_end-size_start)+1);i++,j++){
+                var shoes = new Object();
+                    shoes.model = model;
+                    shoes.color = color;
+                    shoes.size = i;
+                    //console.info(i);
+                shoesArray[j] = shoes;
+            }
+
+
+     console.info(shoesArray)
+    }
+
+
+    var zip = null;
+    //条码导出
+    function download_plu() {
+
+        zip.generateAsync({type:"blob"}).then(function(content) {
+            saveAs(content, "条码.zip");
+        });
+
+    }
+//条码生成，思路是先生成两个canvas，然后组合成一个canvas；引入zip目的是依次将生成的条码装入zip对象
     function generate_plus() {
+        //每次生成条码前才初始化zip对象，避免多次生成的结果都堆到同一个zip中
+        zip = new JSZip();
         $("#plus").html(" ");
         var model = $("#model").val();
         var plu_model = $("#plu_model").val();
@@ -235,13 +272,9 @@
         var plu_color = $("#plu_color").val();
         var size_start = $("#size_start").val();
         var size_end = $("#size_end").val();
-
-
-        for (var i = size_start;i<=size_end;i++){
+        //拼接plu和名字
+       for (var i = size_start;i<=size_end;i++){
             var plu = "6"+plu_model+plu_color+i*10;
-
-                // console.info(plu)
-
             var info = model+color+i;
             do_canvas(info,plu,i);
         }
@@ -251,15 +284,13 @@
 
 
 
-
+//绘画条码
    function do_canvas(info,plu,ext)
     {
         var title = document.getElementById("title");
         title.getContext("2d").clearRect(0,0,300,20);
         title.getContext("2d").font = "18px Arial";
         title.getContext("2d").fillText(info, 20, 15);
-        // title.getContext("2d").fillText("genxinle ", 20, 15);
-        // title.getContext("2d").clearRect(0,0,300,20);
         document.getElementById("ean").getContext("2d").clearRect(0,0,300,80);
                 $("#ean").EAN13(plu, {
             number: true,
@@ -271,10 +302,10 @@
         plu_code.clearRect(0,0,300,100);
         plu_code.drawImage(document.getElementById("title"), 0, 0);
         plu_code.drawImage(document.getElementById("ean"), 0, 20);
-        //将图片转成base64，打包时可以直接利用url
-        var url = document.getElementById(ext).toDataURL();
-       // console.info(url);
-
+        var imgdata = document.getElementById(ext).toDataURL();
+        var img_arr = imgdata.split(',');
+        var img = zip.folder("shoes_plu");
+        img.file(info+".png",img_arr[1], {base64: true})
     }
 
 
