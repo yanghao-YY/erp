@@ -122,24 +122,24 @@
             <form role="form">
                 <div class="form-group">
                     <label for="model">货号:</label>
-                    <input type="text" class="form-control" id="model" placeholder="YZ003">
+                    <input type="text" class="form-control" id="model"  placeholder="YZ003" value="YZ010C">
                 </div>
                 <div class="form-group">
                     <label for="plu_model">货号对应的编码:</label>
-                    <input type="text" class="form-control" id="plu_model" placeholder="0031">
+                    <input type="text" class="form-control" id="plu_model" placeholder="0031" value="0101">
                 </div>
                 <div class="form-group">
                     <label for="color">颜色:</label>
-                    <input type="text" class="form-control" id="color" placeholder="裸色">
+                    <input type="text" class="form-control" id="color" placeholder="裸色" value="裸色">
                 </div>
                 <div class="form-group">
                     <label for="plu_color">颜色对应的编码:</label>
-                    <input type="text" class="form-control" id="plu_color" placeholder="0019">
+                    <input type="text" class="form-control" id="plu_color" placeholder="0019" value="0019">
                 </div>
                 <div class="form-group">
                     <label for="color">尺码区间</label>
-                    <input type="text" class="form-control" id="size_start" placeholder="34">--
-                    <input type="text" class="form-control" id="size_end" placeholder="39">
+                    <input type="text" class="form-control" id="size_start" placeholder="34" value="34">--
+                    <input type="text" class="form-control" id="size_end" placeholder="39" value="39">
                 </div>
                 <!--<div class="form-group">-->
                     <!--<label for="plu_size">尺码对应的编码:</label>-->
@@ -235,11 +235,15 @@
         var plu_color = $("#plu_color").val();
         var size_start = $("#size_start").val();
         var size_end = $("#size_end").val();
-        var info = model+color+size_start;
+
 
         for (var i = size_start;i<=size_end;i++){
             var plu = "6"+plu_model+plu_color+i*10;
-            do_vancas(info,plu,i);
+
+                // console.info(plu)
+
+            var info = model+color+i;
+            do_canvas(info,plu,i);
         }
 
 
@@ -248,7 +252,7 @@
 
 
 
-   function do_vancas(info,plu,ext)
+   function do_canvas(info,plu,ext)
     {
         var title = document.getElementById("title");
         title.getContext("2d").clearRect(0,0,300,20);
@@ -262,13 +266,14 @@
             prefix: true
         });
 
-        $("#plus").append("<canvas id=plu_code+ext width=\"300\" height=\"100\" >\n" +
-            "\n" +
-            "        </canvas>")
-        var plu_code = document.getElementById("plu_code"+ext).getContext("2d");
-        document.getElementById("plu_code"+ext).getContext("2d").clearRect(0,0,300,100);
+        $("#plus").append('<canvas id="'+ ext +'" width="300" height="100"></canvas>')
+        var plu_code = document.getElementById(ext).getContext("2d");
+        plu_code.clearRect(0,0,300,100);
         plu_code.drawImage(document.getElementById("title"), 0, 0);
         plu_code.drawImage(document.getElementById("ean"), 0, 20);
+        //将图片转成base64，打包时可以直接利用url
+        var url = document.getElementById(ext).toDataURL();
+       // console.info(url);
 
     }
 
