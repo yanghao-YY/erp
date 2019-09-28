@@ -92,7 +92,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-table"></i>条码工具</a>
                     <ul class="sub-menu children dropdown-menu">
                         <li><i class="fa fa-table"></i><a href="barcode_by_input.html">自定义条码生成</a></li>
-                        <li><i class="fa fa-table"></i><a href="barcode_fm_sys.html">条码批量处理</a></li>
+                        <!--<li><i class="fa fa-table"></i><a href="barcode_fm_sys.html">条码批量处理</a></li>-->
                     </ul>
                 </li>
             </ul>
@@ -122,33 +122,29 @@
             <form role="form">
                 <div class="form-group">
                     <label for="model">货号:</label>
-                    <input type="text" class="form-control" id="model"  placeholder="YZ003" value="YZ010C">
+                    <input type="text" class="form-control" id="model"  placeholder="YZ003" >
                 </div>
                 <div class="form-group">
                     <label for="plu_model">货号对应的编码:</label>
-                    <input type="text" class="form-control" id="plu_model" placeholder="0031" value="0101">
+                    <input type="text" class="form-control" id="plu_model" placeholder="0031" >
                 </div>
                 <div class="form-group">
                     <label for="color">颜色:</label>
-                    <input type="text" class="form-control" id="color" placeholder="裸色" value="裸色">
+                    <input type="text" class="form-control" id="color" placeholder="裸色">
                 </div>
                 <div class="form-group">
                     <label for="plu_color">颜色对应的编码:</label>
-                    <input type="text" class="form-control" id="plu_color" placeholder="0019" value="0019">
+                    <input type="text" class="form-control" id="plu_color" placeholder="0019" >
                 </div>
                 <div class="form-group">
                     <label for="color">尺码区间</label>
-                    <input type="text" class="form-control" id="size_start" placeholder="34" value="34">--
-                    <input type="text" class="form-control" id="size_end" placeholder="39" value="39">
+                    <input type="text" class="form-control" id="size_start" placeholder="34" >--
+                    <input type="text" class="form-control" id="size_end" placeholder="39" >
                 </div>
-                <!--<div class="form-group">-->
-                    <!--<label for="plu_size">尺码对应的编码:</label>-->
-                    <!--<input type="text" class="form-control" id="plu_size" placeholder="350">-->
-                <!--</div>-->
-
                 <button type="button" class="btn btn-success" onclick="generate_plus()">生成条码</button>
                 <button type="button" class="btn btn-info" onclick="download_plu()">下载条码压缩包</button>
-                <button type="button" class="btn btn-info" onclick="get_data()">showdata</button>
+                <button type="button" class="btn btn-warning" onclick="get_data()">下载鞋子信息的excel</button>
+                <button type="button" class="btn btn-danger" id="reset">重置输入框&条码</button>
             </form>
 
     </div>
@@ -228,6 +224,51 @@
 
 <!--Local Stuff-->
 <script type="application/javascript">
+
+    //excel导出
+    function exportExcel(data, filename) {
+        console.info(data)
+        var table=[];
+        table.push({
+            A:"货号",
+            B:"编码",
+            C:"颜色",
+            D:"尺码",
+            E:"库存",
+            F:"备注",
+        });
+        data.forEach(function (item) {
+            var row={
+                A:item.model,
+                B:item.plu,
+                C:item.color,
+                D:item.size,
+                E:item.stock,
+                f:item.remark,
+
+            };
+            table.push(row);
+        });
+        var wb = XLSX.utils.book_new();
+        var ws = XLSX.utils.json_to_sheet(table, {header:["A","B","C","D","E"], skipHeader:true});
+        XLSX.utils.book_append_sheet(wb, ws, "Shoes");
+        XLSX.writeFile(wb, filename + ".xlsx");
+
+    }
+   //获取ena13条码文本
+    function get_codetext(code) {
+        var c1 = 0;
+        var c2 = 0;
+        for (var i = 0; i < code.length; i += 2) {
+            c1 += code.charAt(i) - '0';   //转换为数字
+            c2 += code.charAt(i + 1) - '0';
+        }
+        var cc = 10 - (c1 + c2 * 3) % 10;
+        if (cc == 10) {
+            cc = 0;
+        }
+        return code + cc;
+    }
     function get_data(){
         var model = $("#model").val();
         var plu_model = $("#plu_model").val();
@@ -235,20 +276,22 @@
         var plu_color = $("#plu_color").val();
         var size_start = $("#size_start").val();
         var size_end = $("#size_end").val();
-    var shoesArray = new Array();
+
+        var shoesArray = new Array();
 
 
             for(var i = size_start,j=0;i<=size_end,j<((size_end-size_start)+1);i++,j++){
                 var shoes = new Object();
+                    shoes.plu = get_codetext("6"+plu_model+plu_color+i*10);
                     shoes.model = model;
                     shoes.color = color;
                     shoes.size = i;
-                    //console.info(i);
-                shoesArray[j] = shoes;
+                    shoes.stock = 0;
+                    shoes.remark = null;
+                    shoesArray[j] = shoes;
             }
 
-
-     console.info(shoesArray)
+            exportExcel(shoesArray,model+color);
     }
 
 
@@ -257,7 +300,7 @@
     function download_plu() {
 
         zip.generateAsync({type:"blob"}).then(function(content) {
-            saveAs(content, "条码.zip");
+            saveAs(content, $("#model").val()+$("#color").val()+"条码.zip");
         });
 
     }
@@ -292,7 +335,8 @@
         title.getContext("2d").font = "18px Arial";
         title.getContext("2d").fillText(info, 20, 15);
         document.getElementById("ean").getContext("2d").clearRect(0,0,300,80);
-                $("#ean").EAN13(plu, {
+        plu13 = get_codetext(plu)
+                $("#ean").EAN13(plu13, {
             number: true,
             prefix: true
         });
@@ -313,9 +357,12 @@
         $("#model").val("");
         $("#plu").val("");
         $("#color").val("");
-        $("#tech").val("");
-        $("#size").val("");
-        $("#remark").val("");
+        $("#plu_model").val("");
+        $("#plu_color").val("");
+        $("#size_start").val("");
+        $("#size_end").val("");
+        $("#plus").html("");
+
 
 
     });
