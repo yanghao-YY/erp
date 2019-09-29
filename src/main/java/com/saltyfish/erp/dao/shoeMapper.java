@@ -56,5 +56,6 @@ public interface shoeMapper {
     //通过plu查鞋子名字、颜色、尺码
     @Select("select * from shoes where plu = #{plu}")
     Shoes queryByplu(@Param("plu")String plu);
+
 }
 
