@@ -148,10 +148,10 @@
             </form>
 
     </div>
-        <canvas id="title" width="300" height="20" style="font-size: larger;border:1px solid #000000;display: none">
+        <canvas id="title" width="300" height="40" style="font-size: 20px;border:1px solid #000000;display: none">
 
         </canvas>
-        <canvas id="ean" width="300" height="80" style="display: none">
+        <canvas id="ean" width="300" height="120" style="display: none;">
 
         </canvas>
         <div id="plus"></div>
@@ -218,6 +218,7 @@
 <script src="https://cdn.bootcss.com/bootstrap-table/1.15.4/extensions/export/bootstrap-table-export.js"></script>
 <script src="assets/js/jquery-ean13.min.js"></script>
 <script src="assets/js/ean13.min.js"></script>
+<!--<script src="https://cdn.bootcss.com/jsbarcode/3.3.13/JsBarcode.all.min.js"></script>-->
 <script src="https://cdn.bootcss.com/FileSaver.js/2014-11-29/FileSaver.min.js"></script>
 <script src="https://cdn.bootcss.com/jszip/3.2.2/jszip.min.js"></script>
 
@@ -331,21 +332,22 @@
    function do_canvas(info,plu,ext)
     {
         var title = document.getElementById("title");
-        title.getContext("2d").clearRect(0,0,300,20);
-        title.getContext("2d").font = "18px Arial";
-        title.getContext("2d").fillText(info, 20, 15);
-        document.getElementById("ean").getContext("2d").clearRect(0,0,300,80);
+        title.getContext("2d").clearRect(0,0,300,40);
+        title.getContext("2d").font = "25px Arial";
+        title.getContext("2d").fillText(info, 10, 35);
+        document.getElementById("ean").getContext("2d").clearRect(0,0,300,120);
         plu13 = get_codetext(plu)
                 $("#ean").EAN13(plu13, {
             number: true,
             prefix: true
+
         });
 
-        $("#plus").append('<canvas id="'+ ext +'" width="300" height="100"></canvas>')
+        $("#plus").append('<canvas id="'+ ext +'" width="300" height="160"></canvas>')
         var plu_code = document.getElementById(ext).getContext("2d");
-        plu_code.clearRect(0,0,300,100);
+        plu_code.clearRect(0,0,300,160);
         plu_code.drawImage(document.getElementById("title"), 0, 0);
-        plu_code.drawImage(document.getElementById("ean"), 0, 20);
+        plu_code.drawImage(document.getElementById("ean"), 0, 40);
         var imgdata = document.getElementById(ext).toDataURL();
         var img_arr = imgdata.split(',');
         var img = zip.folder("shoes_plu");
