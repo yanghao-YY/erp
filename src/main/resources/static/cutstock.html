@@ -184,7 +184,8 @@
 <script>
     //用于扫码时向后台获取鞋子信息，获取到鞋子信息后存本地localstorage
     function getShoesInfo(plu) {
-
+        var  shoesObj = null;
+        var status = 0;
         //var plus = $("#add_plus").val();
         // console.info(plus);
         var params = {"plu": plu};
@@ -194,11 +195,12 @@
             data: params,
             dataType: "json",
             success: function (data) {
-                var shoesObj = eval(data);
+                 shoesObj = eval(data);
                 // var ShoesInfo = " "+shoesObj.model+shoesObj.color+shoesObj.size+" ";
                 // return ShoesInfo;
                 localStorage.setItem(plu, shoesObj.model+shoesObj.color+shoesObj.size);
                 // console.info(localStorage.getItem(plu));
+                status = 1;
             },
             error:function () {
                 swal(
@@ -208,6 +210,9 @@
                 )
             }
         });
+        if(status == 1) {
+            return shoesObj;
+        }
     };
     //清空显示数据
     $("#reset").on('click', function () {
@@ -244,7 +249,12 @@
 
             //判断localStorage中是否有该键值，如果没有则请求后台查询该plu
             if(localStorage.getItem(i) == null ){
-                getShoesInfo(i);
+                var showObj =   getShoesInfo(i);
+                // console.info(showObj);
+                $('#showcode').append( showObj.model+showObj.color+showObj.size+ " X " + obj[i] + "<br>");
+               //  console.info("执行显示了");
+               // debugger;
+                count = count + obj[i];
             }else {
 
                 $('#showcode').append(localStorage.getItem(i) + " X " + obj[i] + "<br>");
