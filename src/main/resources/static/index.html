@@ -139,6 +139,15 @@
                                data-col-index="0" name="color">
                     </div>
                     <div class="col-lg-3 m--margin-bottom-10-tablet-and-mobile">
+                        <label>店铺</label>
+                        <select class="form-control m-input" id="storeName" name="storeName"
+                                data-col-index="2" style="height: auto">
+                            <option value="">请选择</option>
+                            <option value="SaltyFish">SaltyFish</option>
+                            <option value="HotGirl">HotGirl</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3 m--margin-bottom-10-tablet-and-mobile">
                         <label>尺码</label>
                         <select class="form-control m-input" id="size" name="size"
                                 data-col-index="2" style="height: auto">
@@ -261,6 +270,7 @@
         $("#tech").val("");
         $("#size").val("");
         $("#remark").val("");
+        $("#storeName").val("");
 
 
     });
@@ -342,6 +352,12 @@
                     valign: 'middle',
                 },
                 {
+                    field: 'storeName',
+                    title: '店铺',
+                    align: 'center',
+                    valign: 'middle',
+                },
+                {
                     field: 'remark',
                     title: '备注',
                     align: 'center',
@@ -359,6 +375,7 @@
         params.plu = $("#plu").val();
         params.color = $("#color").val();
         params.size = $("#size").val();
+        params.storeName = $("#storeName").val();
         params.remark = $("#remark").val();
         return params;
     };

@@ -50,11 +50,11 @@ public class shoeController {
     }
     //查询
     @PostMapping("/query")
-    public shoeData query(@RequestParam("model")String model,@RequestParam("plu")String plu,@RequestParam("color")String color,@RequestParam("size")String size,@RequestParam("remark")String remark,@RequestParam(value = "pageSize",defaultValue = "1")int pageSize,@RequestParam(value = "pageNumber",defaultValue = "1")int pageNumber){
+    public shoeData query(@RequestParam("model")String model,@RequestParam("plu")String plu,@RequestParam("color")String color,@RequestParam("size")String size,@RequestParam("storeName")String storeName,@RequestParam("remark")String remark,@RequestParam(value = "pageSize",defaultValue = "1")int pageSize,@RequestParam(value = "pageNumber",defaultValue = "1")int pageNumber){
         try {
             //判断如何前端没有传分页信息，则判定为需要调用导出功能，不调用分页，返回查询的全部结果
             if ((pageNumber == 1) && (pageSize ==1)) {
-                List<Shoes> shoesList = shoeService.query(model,plu,color,size,remark);
+                List<Shoes> shoesList = shoeService.query(model,plu,color,size,storeName,remark);
                 PageInfo<Shoes> pageInfo = new PageInfo<>(shoesList);
                 shoeData shoedata = new shoeData(pageInfo.getTotal(),shoesList);
                 return shoedata;
@@ -63,7 +63,7 @@ public class shoeController {
             else {
               //  System.out.println(pageNumber);
                 PageHelper.startPage(pageNumber,pageSize);
-                List<Shoes> shoesList = shoeService.query(model,plu,color,size,remark);
+                List<Shoes> shoesList = shoeService.query(model,plu,color,size,storeName,remark);
                 PageInfo<Shoes> pageInfo = new PageInfo<>(shoesList);
                 shoeData shoedata = new shoeData(pageInfo.getTotal(),shoesList);
 //            Result result = new Result("0000","success",shoedata);
@@ -76,9 +76,9 @@ public class shoeController {
 
     }
     @PostMapping("/add")
-    public  Result add(@RequestParam("model")String model,@RequestParam("plu")String plu,@RequestParam("color")String color,@RequestParam("size")String size,@RequestParam("stock")String stock,@RequestParam("remark")String remark){
+    public  Result add(@RequestParam("model")String model,@RequestParam("plu")String plu,@RequestParam("color")String color,@RequestParam("size")String size,@RequestParam("stock")String stock,@RequestParam("storeName")String storeName,@RequestParam("remark")String remark){
         try {
-            shoeService.add(model,plu,color,size,stock,remark);
+            shoeService.add(model,plu,color,size,stock,storeName,remark);
         } catch (Exception e) {
             Result result = new Result("9999","新建鞋子信息失败",null);
             return result;
@@ -87,9 +87,9 @@ public class shoeController {
         return result;
     }
     @PostMapping("/update")
-    public Result update(@RequestParam("id")int id,@RequestParam("model")String model,@RequestParam("plu")String plu,@RequestParam("color")String color,@RequestParam("size")String size,@RequestParam("stock")String stock,@RequestParam("remark")String remark){
+    public Result update(@RequestParam("id")int id,@RequestParam("model")String model,@RequestParam("plu")String plu,@RequestParam("color")String color,@RequestParam("size")String size,@RequestParam("stock")String stock,@RequestParam("storeName")String storeName,@RequestParam("remark")String remark){
         try {
-            shoeService.update(id, model, plu, color, size, stock, remark);
+            shoeService.update(id, model, plu, color, size, stock,storeName, remark);
             return new Result("0000","更新鞋子库存成功",null);
         } catch (Exception e) {
             return new Result("9999","更新鞋子库存失败",null);

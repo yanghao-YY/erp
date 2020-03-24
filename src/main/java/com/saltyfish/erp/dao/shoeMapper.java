@@ -17,10 +17,10 @@ public interface shoeMapper {
     void cutStock(@Param("plu")String plu);
     //查询库存
     @SelectProvider(type = ServerSqlProvider.class)
-    List<Shoes> query(@Param("model")String model, @Param("plu")String plu, @Param("color")String color,@Param("size")String size,@Param("remark")String remark);
+    List<Shoes> query(@Param("model")String model, @Param("plu")String plu, @Param("color")String color,@Param("size")String size,@Param("storeName")String storeName,@Param("remark")String remark);
 
     class ServerSqlProvider implements ProviderMethodResolver {
-        public static String query(final @Param("model")String model,final  @Param("plu")String plu, final @Param("color")String color,final @Param("size")String size,final @Param("remark")String remark){
+        public static String query(final @Param("model")String model,final  @Param("plu")String plu, final @Param("color")String color,final @Param("size")String size,final @Param("storeName")String storeName,final @Param("remark")String remark){
             SQL sql = new SQL().SELECT("*").FROM("shoes");
 
             if(!model.equals("")){
@@ -39,17 +39,20 @@ public interface shoeMapper {
             if(!remark.equals("")){
                 sql.WHERE("remark like concat('%',#{remark},'%')");
             }
-            sql.ORDER_BY("id desc");
+            if(!storeName.equals("")){
+                sql.WHERE("storeName like concat('%',#{storeName},'%')");
+            }
+            sql.ORDER_BY("id asc");
             return sql.toString();
 
         }
     }
     //新增鞋子
-    @Insert("insert into shoes(model,plu,color,size,stock,remark) values(#{model},#{plu},#{color},#{size},#{stock},#{remark})")
-    void addShoes(@Param("model")String model, @Param("plu")String plu, @Param("color")String color, @Param("size")String size,@Param("stock")String stock,@Param("remark")String remark);
+    @Insert("insert into shoes(model,plu,color,size,stock,storeName,remark) values(#{model},#{plu},#{color},#{size},#{stock},#{storeName},#{remark})")
+    void addShoes(@Param("model")String model, @Param("plu")String plu, @Param("color")String color, @Param("size")String size,@Param("stock")String stock,@Param("storeName")String storeName,@Param("remark")String remark);
     //修改鞋子
-    @Update("update shoes set model=#{model},plu=#{plu},color=#{color},size=#{size},stock=#{stock},remark=#{remark} where id=#{id}")
-    void updateShoes(@Param("id")int id,@Param("model")String model, @Param("plu")String plu, @Param("color")String color, @Param("size")String size,@Param("stock")String stock,@Param("remark")String remark);
+    @Update("update shoes set model=#{model},plu=#{plu},color=#{color},size=#{size},stock=#{stock},storeName=#{storeName},remark=#{remark} where id=#{id}")
+    void updateShoes(@Param("id")int id,@Param("model")String model, @Param("plu")String plu, @Param("color")String color, @Param("size")String size,@Param("stock")String stock,@Param("storeName")String storename,@Param("remark")String remark);
     //删除鞋子
     @Delete("delete from shoes where id = #{id}")
     void deleteShoes(@Param("id")int id);

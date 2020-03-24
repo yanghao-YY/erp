@@ -23,19 +23,20 @@ public class shoeServiceImpl implements shoeService {
     }
 
     @Override
-    public List<Shoes> query(String model, String plu, String color, String size, String remark) {
-        List<Shoes> shoes = shoeMapper.query(model, plu, color, size, remark);
+    public List<Shoes> query(String model, String plu, String color, String size,String storeName, String remark) {
+        List<Shoes> shoes = shoeMapper.query(model, plu, color, size,storeName, remark);
+        System.out.println(shoes);
         return shoes;
     }
 
     @Override
-    public void add(String model, String plu, String color, String size, String stock, String remark) {
-        shoeMapper.addShoes(model,plu,color,size,stock,remark);
+    public void add(String model, String plu, String color, String size, String stock,String storeName, String remark) {
+        shoeMapper.addShoes(model,plu,color,size,stock,storeName,remark);
     }
 
     @Override
-    public void update(int id, String model, String plu, String color, String size, String stock, String remark) {
-      shoeMapper.updateShoes(id, model, plu, color, size, stock, remark);
+    public void update(int id, String model, String plu, String color, String size, String stock,String storeName, String remark) {
+      shoeMapper.updateShoes(id, model, plu, color, size, stock,storeName, remark);
     }
 
     @Override

@@ -182,7 +182,15 @@
 
                         </select>
                     </div>
-
+                    <div class="col-lg-3 m--margin-bottom-10-tablet-and-mobile">
+                        <label>店铺</label>
+                        <select class="form-control m-input" id="storeName" name="storeName"
+                                data-col-index="2" style="height: auto">
+                            <option value="">请选择</option>
+                            <option value="SaltyFish">SaltyFish</option>
+                            <option value="HotGirl">HotGirl</option>
+                        </select>
+                    </div>
                     <div class="col-lg-3 m--margin-bottom-10-tablet-and-mobile">
                         <label>备注</label>
                         <input type="text" class="form-control m-input" id="remark"
@@ -264,6 +272,16 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label for="size" class="col-sm-2 control-label">店铺</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control" id="add_storeName" style="height: auto">
+                                            <option value="">请选择</option>
+                                            <option value="SaltyFish">SaltyFish</option>
+                                            <option value="HotGirl">HotGirl</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label  class="col-sm-2 control-label">库存</label>
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="add_stock" data-bv-notempty="true">
@@ -337,6 +355,16 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label for="size" class="col-sm-2 control-label">店铺</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control" id="update_storeName" style="height: auto">
+                                            <option value="">请选择</option>
+                                            <option value="SaltyFish">SaltyFish</option>
+                                            <option value="HotGirl">HotGirl</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                 <div class="form-group">
                                     <label  class="col-sm-2 control-label">库存</label>
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="update_stock" data-bv-notempty="true">
@@ -425,6 +453,8 @@
         $("#tech").val("");
         $("#size").val("");
         $("#remark").val("");
+        $("#storeName").val("");
+
 
 
     });
@@ -496,6 +526,12 @@
                     valign: 'middle',
                 },
                 {
+                    field: 'storeName',
+                    title: '店铺',
+                    align: 'center',
+                    valign: 'middle',
+                },
+                {
                     field: 'remark',
                     title: '备注',
                     align: 'center',
@@ -519,6 +555,7 @@
         params.plu = $("#plu").val();
         params.color = $("#color").val();
         params.size = $("#size").val();
+        params.storeName = $("#storeName").val();
         params.remark = $("#remark").val();
         return params;
     };
@@ -533,8 +570,9 @@
         var color = $("#add_color").val();
         var size = $("#add_size").val();
         var stock = $("#add_stock").val();
+        var storeName = $("#add_storeName").val();
         var remark = $("#add_remark").val();
-        var params = {"model": model, "plu": plu, "color": color,"size":size,"stock":stock,"remark":remark};
+        var params = {"model": model, "plu": plu, "color": color,"size":size,"stock":stock,"storeName":storeName,"remark":remark};
         $.ajax({
             url: "/add",
             type: "post",
@@ -578,8 +616,9 @@
         var color = $("#update_color").val();
         var size = $("#update_size").val();
         var stock = $("#update_stock").val();
+        var storeName = $("#update_storeName").val();
         var remark = $("#update_remark").val();
-        var params = {"id":id,"model": model, "plu": plu, "color": color,"size":size,"stock":stock,"remark":remark};
+        var params = {"id":id,"model": model, "plu": plu, "color": color,"size":size,"stock":stock,"storeName":storeName,"remark":remark};
 
         $.ajax({
             url: "/update",
@@ -670,6 +709,7 @@
         $("#update_color").val(row.color);
         $("#update_size").val(row.size);
         $("#update_stock").val(row.stock);
+        $("#update_storeName").val(row.storeName);
         $("#update_remark").val(row.remark);
         //在删除时给弹窗赋值
         $("#comfirm_message").text("确认要删除  "+row.model+row.color+row.size+"  吗？");

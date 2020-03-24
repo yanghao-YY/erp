@@ -7,7 +7,16 @@ public class Shoes {
     private String color;
     private String size;
     private String stock;
+    private String storeName;
     private String remark;
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+    }
 
     public int getId() {
         return id;
@@ -72,6 +81,7 @@ public class Shoes {
                 ", color='" + color + '\'' +
                 ", size='" + size + '\'' +
                 ", stock='" + stock + '\'' +
+                ", storeName='" + storeName + '\'' +
                 ", remark='" + remark + '\'' +
                 '}';
     }
